@@ -4,6 +4,7 @@ export default defineNuxtConfig({
   experimental: {
     typedPages: true,
   },
+  modules: ['@element-plus/nuxt'],
   build: {
     transpile: ['trpc-nuxt'],
   },
