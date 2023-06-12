@@ -9,8 +9,7 @@
     "fmt": "prettier --write .",
     "lint": "eslint --max-warnings 0 .",
     "typecheck": "nuxt typecheck",
-    "push": "prisma db push",
-    "postinstall": "nuxt prepare"
+    "push": "prisma db push"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.39.5",
@@ -28,6 +27,7 @@
     "nuxt": "^3.5.2",
     "prettier": "^2.8.8",
     "prisma": "^4.15.0",
+    "puppeteer": "^20.5.0",
     "superjson": "^1.12.3",
     "trpc-nuxt": "^0.10.5",
     "typescript": "^5.1.3",
