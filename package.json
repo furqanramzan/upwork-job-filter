@@ -7,8 +7,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "fmt": "prettier --write .",
-    "lint": "eslint --max-warnings 0 .",
-    "typecheck": "nuxt typecheck",
+    "lint": "eslint --fix --max-warnings 0 .",
     "push": "prisma db push"
   },
   "devDependencies": {

@@ -4,20 +4,34 @@ Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introdu
 
 ## Setup
 
-Make sure to install the dependencies:
+Make a copy of the environment variables file.
+
+```bash
+cp .env.example .env
+```
+
+Install the dependencies:
 
 ```bash
 pnpm install
 ```
+
 Create SQLite database.
 
 ```bash
 pnpm run push
 ```
+
 Prepare Nuxt.
 
 ```bash
 pnpm nuxt prepare
+```
+
+Set git hooks.
+
+```bash
+git config core.hooksPath .githooks
 ```
 
 ## Development Server

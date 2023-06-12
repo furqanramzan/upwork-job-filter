@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -e
+echo "-----------------------------"
+echo "| Running Format Checking |"
+echo "-----------------------------"
+sh -c "pnpm prettier --check ."
+
+echo "-----------------------------"
+echo "| Running Lint Checking |"
+echo "-----------------------------"
+sh -c "pnpm eslint --max-warnings 0 ."
+
+echo "-----------------------------"
+echo "| Running Type Checking |"
+echo "-----------------------------"
+sh -c "pnpm nuxt typecheck"
