@@ -4,6 +4,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     UPWORK_USERNAME: process.env.UPWORK_USERNAME,
     UPWORK_PASSWORD: process.env.UPWORK_PASSWORD,
+    CHROME_EXECUTABLE_PATH: process.env.CHROME_EXECUTABLE_PATH,
   },
   experimental: {
     typedPages: true,

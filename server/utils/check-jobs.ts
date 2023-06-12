@@ -13,8 +13,7 @@ export async function checkJobs() {
     'woo commerce',
   ];
 
-  const executablePath =
-    '/etc/profiles/per-user/furqan/bin/google-chrome-stable';
+  const executablePath = configs.CHROME_EXECUTABLE_PATH;
   const browser = await launch({
     headless: 'new',
     userDataDir: './tmp',
@@ -46,7 +45,7 @@ export async function checkJobs() {
     await page.evaluate(() => {
       window.scrollBy(0, window.innerHeight);
     });
-    await sleep(1000);
+    await sleep(2000);
 
     const jobTitles = await page.$$eval('h3.job-tile-title > a', (group) =>
       group.map((g) => ({ title: g.innerText, url: g.href, description: '' })),
