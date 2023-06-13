@@ -14,11 +14,12 @@ datasource db {
 }
 
 model Job {
-  id          String  @id @default(uuid())
-  url         String  @unique
+  id          String   @id @default(uuid())
+  url         String   @unique
   title       String
   description String
-  isFiltered  Boolean @map("is_filtered")
+  postedTime DateTime @map("posted_time")
+  isFiltered  Boolean  @map("is_filtered")
 
   @@map("jobs")
 }

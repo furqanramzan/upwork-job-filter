@@ -1,6 +1,6 @@
 import { launch } from 'puppeteer';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import type { Job } from '@prisma/client';
+import type { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 export async function checkJobs() {
   const configs = useRuntimeConfig();
@@ -56,9 +56,15 @@ export async function checkJobs() {
       (group) => group.map((g) => g.innerText),
     );
 
+    const jobPosted = await page.$$eval(
+      '[data-test="posted-on"] > span',
+      (group) => group.map((g) => g.innerText),
+    );
+
     const allJobs = jobTitles.map((job, index) => ({
       ...job,
       description: jobDescriptions[index],
+      postedTime: getTimeFromString(jobPosted[index].replace('.', ' ')),
     }));
 
     const visitedJobs = await page.$$eval(
@@ -83,11 +89,8 @@ export async function checkJobs() {
         );
         if (data) {
           jobs.push(data);
-        } else if (
-          error instanceof PrismaClientKnownRequestError &&
-          error.code !== 'P2002'
-        ) {
-          console.error(error);
+        } else {
+          console.error((error as PrismaClientKnownRequestError).message);
         }
       }
     }

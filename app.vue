@@ -34,6 +34,9 @@ const { data: jobs } = $trpc.job.list.useQuery();
           </div>
         </template>
         <p>{{ job.description }}</p>
+        <div class="flex justify-end">
+          <p>{{ getStringFromTime(job.postedTime) }}</p>
+        </div>
       </el-card>
     </div>
     <p v-else class="text-center text-xl font-bold">No job found</p>

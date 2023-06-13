@@ -2,9 +2,10 @@ import { useScheduler } from '#scheduler';
 
 export default defineNitroPlugin(() => {
   useScheduler()
-    .run(() => {
-      console.info('Executing job cron', new Date());
-      return checkJobs();
+    .run(async () => {
+      console.info('Executing job cron: ', new Date());
+      await checkJobs();
+      console.info('Executed job cron: ', new Date());
     })
     .everyMinutes(3);
 });
