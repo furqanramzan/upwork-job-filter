@@ -9,7 +9,12 @@ export default defineNuxtConfig({
   experimental: {
     typedPages: true,
   },
-  modules: ['@element-plus/nuxt', 'nuxt-scheduler', '@nuxtjs/tailwindcss'],
+  modules: [
+    '@element-plus/nuxt',
+    'nuxt-scheduler',
+    '@nuxtjs/tailwindcss',
+    '@vueuse/nuxt',
+  ],
   build: {
     transpile: ['trpc-nuxt'],
   },

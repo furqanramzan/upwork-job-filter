@@ -20,6 +20,7 @@
     "@trpc/client": "^10.29.1",
     "@trpc/server": "^10.29.1",
     "@types/node": "^18",
+    "@vueuse/nuxt": "^10.1.2",
     "element-plus": "^2.3.6",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^8.8.0",
