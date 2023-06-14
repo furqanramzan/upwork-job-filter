@@ -3,6 +3,12 @@ import { Check, Close } from '@element-plus/icons-vue';
 import type { Job } from '@prisma/client';
 
 const { job } = defineProps<{ job: Job }>();
+
+function copyForProposal() {
+  copyToClipboard(
+    `Using the information I have provided, please craft me an upwork proposal for this job:\n\nJob Title: \n${job.title}\n\nJob Description: \n${job.description}`,
+  );
+}
 </script>
 
 <template>
@@ -28,7 +34,10 @@ const { job } = defineProps<{ job: Job }>();
           </el-icon>
           {{ job.title }}
         </span>
-        <el-link :href="job.url" target="_blank">Open </el-link>
+        <div class="flex gap-2">
+          <el-link @click.prevent="copyForProposal">Copy</el-link>
+          <el-link :href="job.url" target="_blank"> Open </el-link>
+        </div>
       </div>
     </template>
     <p>{{ job.description }}</p>
