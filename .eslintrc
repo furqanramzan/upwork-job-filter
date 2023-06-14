@@ -20,6 +20,12 @@
           }
         ]
       }
+    },
+    {
+      "files": ["./**/*.{vue,js,ts}"],
+      "rules": {
+        "vue/no-setup-props-destructure": "off"
+      }
     }
   ]
 }
