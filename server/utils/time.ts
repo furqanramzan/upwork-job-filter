@@ -9,6 +9,7 @@ export function getTimeFromString(timeString: string): Date {
     second: 1000,
     min: 60000,
     minute: 60000,
+    hr: 3600000,
     hour: 3600000,
     day: 86400000,
     week: 604800000,
