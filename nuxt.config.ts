@@ -2,6 +2,7 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig: {
+    CRON_TIMEOUT: process.env.CRON_TIMEOUT,
     UPWORK_USERNAME: process.env.UPWORK_USERNAME,
     UPWORK_PASSWORD: process.env.UPWORK_PASSWORD,
     CHROME_EXECUTABLE_PATH: process.env.CHROME_EXECUTABLE_PATH,

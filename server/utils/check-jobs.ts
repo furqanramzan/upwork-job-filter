@@ -28,10 +28,10 @@ export async function checkJobs() {
 
     await scrapeJobs(page);
     await page.click('[data-test="tab-best-matches"]');
-    sleep(3000);
+    sleep(5000);
     await scrapeJobs(page);
     await page.click('[data-test="tab-most-recent"]');
-    sleep(3000);
+    sleep(5000);
     await scrapeJobs(page);
   } catch (error) {
     success = false;
@@ -70,7 +70,7 @@ async function scrapeJobs(page: Page) {
   await page.evaluate(() => {
     window.scrollBy(0, window.innerHeight);
   });
-  await sleep(2000);
+  await sleep(4000);
 
   const jobTitles = await page.$$eval('h3.job-tile-title > a', (group) =>
     group.map((g) => ({ title: g.innerText, url: g.href, description: '' })),
@@ -118,6 +118,7 @@ async function scrapeJobs(page: Page) {
         );
         await sleep(1000);
         await page.goBack();
+        await sleep(500);
       } else {
         console.error((error as PrismaClientKnownRequestError).message);
       }
