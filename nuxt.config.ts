@@ -1,7 +1,10 @@
+import { resolve } from 'node:path';
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig: {
+    DRIZZLE_DIRECTORY: resolve('./server/drizzle/'),
     CRON_TIMEOUT: process.env.CRON_TIMEOUT,
     UPWORK_USERNAME: process.env.UPWORK_USERNAME,
     UPWORK_PASSWORD: process.env.UPWORK_PASSWORD,

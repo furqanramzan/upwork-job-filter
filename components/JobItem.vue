@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Check, Close } from '@element-plus/icons-vue';
-import type { Job } from '@prisma/client';
+import type { Job } from '~/server/utils/models';
 
 const { job } = defineProps<{ job: Job }>();
 

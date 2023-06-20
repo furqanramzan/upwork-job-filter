@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1687269032864,
+      "tag": "0000_wooden_chimera",
+      "breakpoints": true
+    }
+  ]
+}

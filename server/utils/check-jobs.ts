@@ -1,6 +1,6 @@
 import { launch } from 'puppeteer';
 import type { Page } from 'puppeteer';
-import type { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { jobs } from '~/server/drizzle/schema';
 
 const headless = true;
 
@@ -107,11 +107,17 @@ async function scrapeJobs(page: Page) {
     );
 
     const visisted = visitedJobs.includes(url);
+    const drizzle = useDrizzle();
 
     if (!visisted) {
       const { data, error } = await promise(() =>
-        prisma.job.create({ data: { ...job, isFiltered } }),
+        drizzle
+          .insert(jobs)
+          .values({ ...job, isFiltered })
+          .onConflictDoNothing()
+          .run(),
       );
+
       if (data) {
         await page.click(
           `[href="${url.replace('https://www.upwork.com', '')}"]`,
@@ -120,7 +126,7 @@ async function scrapeJobs(page: Page) {
         await page.goBack();
         await sleep(500);
       } else {
-        console.error((error as PrismaClientKnownRequestError).message);
+        console.error(error);
       }
     }
   }
