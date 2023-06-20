@@ -8,6 +8,8 @@ import Database from 'better-sqlite3';
 export function useDrizzle() {
   const { DRIZZLE_DIRECTORY } = useRuntimeConfig();
   const sqlite = new Database(join(DRIZZLE_DIRECTORY, 'db.sqlite'));
-  const drizzle: BetterSQLite3Database = drizzleOrm(sqlite, { logger: true });
+  const drizzle: BetterSQLite3Database = drizzleOrm(sqlite, {
+    logger: process.dev,
+  });
   return drizzle;
 }

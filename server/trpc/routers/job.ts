@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, like, or } from 'drizzle-orm';
+import { and, desc, eq, gte } from 'drizzle-orm';
 import { jobs } from '~/server/drizzle/schema';
 
 export const job = trpcRouter({
@@ -6,10 +6,9 @@ export const job = trpcRouter({
     .input(
       zod.object({
         isFiltered: zod.boolean(),
-        searchKeyword: zod.string(),
       }),
     )
-    .query(({ input: { isFiltered, searchKeyword } }) => {
+    .query(({ input: { isFiltered } }) => {
       const postedInPastHours = 1;
       const drizzle = useDrizzle();
 
@@ -23,10 +22,6 @@ export const job = trpcRouter({
             gte(
               jobs.postedTime,
               new Date(Date.now() - postedInPastHours * 60 * 60 * 1000),
-            ),
-            or(
-              like(jobs.title, searchKeyword),
-              like(jobs.description, searchKeyword),
             ),
           ),
         )
