@@ -107,8 +107,6 @@ async function scrapeJobs(page: Page) {
     );
 
     const visisted = visitedJobs.includes(url);
-    const drizzle = useDrizzle();
-
     if (!visisted) {
       const { data, error } = await promise(() =>
         drizzle

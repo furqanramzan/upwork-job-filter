@@ -10,8 +10,6 @@ export const job = trpcRouter({
     )
     .query(({ input: { isFiltered } }) => {
       const postedInPastHours = 1;
-      const drizzle = useDrizzle();
-
       return drizzle
         .select()
         .from(jobs)
