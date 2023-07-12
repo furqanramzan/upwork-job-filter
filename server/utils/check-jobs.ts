@@ -74,6 +74,9 @@ async function scrapeJobs(page: Page) {
     'tailwind',
     'bootstrap',
     'full stack',
+    'flowbite',
+    'web developer',
+    'landing page',
   ];
   const irrelevantWords = [
     'webflow',
@@ -85,6 +88,11 @@ async function scrapeJobs(page: Page) {
     'angular',
     'elementor',
     'woo commerce',
+    '.net',
+    'python',
+    'android',
+    'ios',
+    'mobile app',
   ];
 
   await page.evaluate(() => {
@@ -123,11 +131,12 @@ async function scrapeJobs(page: Page) {
     const description = job.description.toLowerCase();
     let filter: Job['filter'] = 'notsure';
 
-    const isRelevant = relevantWords.some(
-      (word) => title.includes(word) || description.includes(word),
+    const text = `${title} ${description}`;
+    const isRelevant = relevantWords.some((word) =>
+      searchExactWord(text, word),
     );
-    const isIrrelevant = irrelevantWords.some(
-      (word) => title.includes(word) || description.includes(word),
+    const isIrrelevant = irrelevantWords.some((word) =>
+      searchExactWord(text, word),
     );
     if (isRelevant && isIrrelevant) {
       filter = 'relevant-irrelevant';
@@ -156,4 +165,9 @@ async function scrapeJobs(page: Page) {
       }
     }
   }
+}
+
+function searchExactWord(text: string, word: string): boolean {
+  const regex = new RegExp(`\\b${word}\\b`, 'i');
+  return regex.test(text);
 }

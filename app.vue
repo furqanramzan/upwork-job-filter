@@ -40,7 +40,7 @@ async function checkUnviewed() {
   if (isUnviewed) {
     show();
   }
-  setTimeout(checkUnviewed, 2 * 60000);
+  setTimeout(checkUnviewed, 1 * 60000);
 }
 
 onMounted(() => checkUnviewed());
