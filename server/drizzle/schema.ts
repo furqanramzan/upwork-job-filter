@@ -1,21 +1,24 @@
 import {
-  integer,
-  sqliteTable,
+  boolean,
+  mysqlTable,
+  serial,
   text,
+  timestamp,
   uniqueIndex,
-} from 'drizzle-orm/sqlite-core';
+  varchar,
+} from 'drizzle-orm/mysql-core';
 
-export const jobs = sqliteTable(
+export const jobs = mysqlTable(
   'jobs',
   {
-    id: integer('id').primaryKey(),
-    url: text('url').notNull(),
+    id: serial('id').primaryKey(),
+    url: varchar('url', { length: 256 }).notNull(),
     title: text('title').notNull(),
     description: text('description').notNull(),
-    postedTime: integer('posted_time', { mode: 'timestamp' }).notNull(),
-    isFiltered: integer('is_filtered', { mode: 'boolean' }).notNull(),
+    postedTime: timestamp('posted_time').notNull(),
+    isFiltered: boolean('is_filtered').notNull(),
   },
   (jobs) => ({
-    nameIdx: uniqueIndex('nameIdx').on(jobs.url),
+    urlIdx: uniqueIndex('urlIdx').on(jobs.url),
   }),
 );

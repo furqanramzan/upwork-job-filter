@@ -8,8 +8,8 @@
     "preview": "nuxt preview",
     "fmt": "prettier --write .",
     "lint": "eslint --fix --max-warnings 0 .",
-    "prepare": "pnpm rebuild better-sqlite3 && nuxt prepare",
-    "migration": "drizzle-kit generate:sqlite --schema=./server/drizzle/schema.ts --out=./server/drizzle/migrations"
+    "prepare": "nuxt prepare",
+    "migration": "drizzle-kit generate:mysql --schema=./server/drizzle/schema.ts --out=./server/drizzle/migrations"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.39.5",
@@ -21,13 +21,14 @@
     "@trpc/server": "^10.30.0",
     "@types/node": "^20",
     "@vueuse/nuxt": "^10.1.2",
-    "better-sqlite3": "^8.4.0",
     "drizzle-kit": "^0.19.1",
     "drizzle-orm": "^0.27.0",
+    "drizzle-zod": "^0.4.4",
     "element-plus": "^2.3.6",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "mysql2": "^3.5.1",
     "nuxt": "^3.5.3",
     "nuxt-scheduler": "^0.0.16",
     "prettier": "^2.8.8",

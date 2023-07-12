@@ -1,12 +1,20 @@
 import { join } from 'node:path';
-import { drizzle as drizzleOrm } from 'drizzle-orm/better-sqlite3';
-import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
+import { createConnection } from 'mysql2';
+import { drizzle as drizzleOrm } from 'drizzle-orm/mysql2';
+import { migrate } from 'drizzle-orm/mysql2/migrator';
 
-// @ts-expect-error
-import Database from 'better-sqlite3';
+const connection = createConnection({
+  host: process.env.DATABASE_HOST,
+  port: Number(process.env.DATABASE_PORT),
+  user: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  database: process.env.DATABASE_NAME,
+});
 
+export const drizzle = drizzleOrm(connection);
+
+// this will automatically run needed migrations on the database
 const { DRIZZLE_DIRECTORY } = useRuntimeConfig();
-const sqlite = new Database(join(DRIZZLE_DIRECTORY, 'db.sqlite'));
-export const drizzle: BetterSQLite3Database = drizzleOrm(sqlite, {
-  logger: process.dev,
+migrate(drizzle, {
+  migrationsFolder: join(DRIZZLE_DIRECTORY, './migrations'),
 });

@@ -109,11 +109,7 @@ async function scrapeJobs(page: Page) {
     const visisted = visitedJobs.includes(url);
     if (!visisted) {
       const { data, error } = await promise(() =>
-        drizzle
-          .insert(jobs)
-          .values({ ...job, isFiltered })
-          .onConflictDoNothing()
-          .run(),
+        drizzle.insert(jobs).values({ ...job, isFiltered }),
       );
 
       if (data) {

@@ -22,7 +22,6 @@ export const job = trpcRouter({
               new Date(Date.now() - postedInPastHours * 60 * 60 * 1000),
             ),
           ),
-        )
-        .all();
+        );
     }),
 });
