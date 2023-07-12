@@ -1,7 +1,7 @@
 import { launch } from 'puppeteer';
 import type { Page } from 'puppeteer';
 import { jobs } from '~/server/drizzle/schema';
-import type { Job } from '~/server/drizzle/schema';
+import type { InsertJob, Job } from '~/server/drizzle/schema';
 
 const headless = true;
 
@@ -139,8 +139,9 @@ async function scrapeJobs(page: Page) {
 
     const visisted = visitedJobs.includes(url);
     if (!visisted) {
+      const values: InsertJob = { ...job, filter };
       const { data, error } = await promise(() =>
-        drizzle.insert(jobs).values({ ...job, filter }),
+        drizzle.insert(jobs).values(values),
       );
 
       if (data) {
@@ -151,7 +152,7 @@ async function scrapeJobs(page: Page) {
         await page.goBack();
         await sleep(500);
       } else {
-        console.error(error);
+        console.error({ error, values });
       }
     }
   }

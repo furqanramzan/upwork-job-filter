@@ -1,5 +1,6 @@
 import { createSelectSchema } from 'drizzle-zod';
 import {
+  boolean,
   mysqlTable,
   serial,
   text,
@@ -21,10 +22,12 @@ export const jobs = mysqlTable(
       length: 30,
       enum: ['relevant', 'irrelevant', 'notsure', 'relevant-irrelevant'],
     }).notNull(),
+    isViewed: boolean('is_viewed').default(false).notNull(),
   },
   (jobs) => ({
     urlIdx: uniqueIndex('urlIdx').on(jobs.url),
   }),
 );
 export type Job = InferModel<typeof jobs, 'select'>;
+export type InsertJob = InferModel<typeof jobs, 'insert'>;
 export const selectJobSchema = createSelectSchema(jobs);

@@ -5,12 +5,22 @@ const { $trpc } = useNuxtApp();
 
 const query = ref<RouterInput['job']['list']>({
   filter: 'relevant',
+  isViewed: false,
 });
 
 const { data: jobs, refresh } = $trpc.job.list.useQuery(query);
 
 function filterJob(key: string) {
   query.value.filter = key as RouterInput['job']['list']['filter'];
+  refresh();
+}
+
+function viewJob(key: string) {
+  if (key === 'viewed') {
+    query.value.isViewed = true;
+  } else if (key === 'unviewed') {
+    query.value.isViewed = false;
+  }
   refresh();
 }
 </script>
@@ -29,6 +39,10 @@ function filterJob(key: string) {
         >
         <el-menu-item index="notsure">Not Sure</el-menu-item>
         <el-menu-item index="irrelevant">Irrelevant</el-menu-item>
+      </el-menu>
+      <el-menu default-active="unviewed" mode="horizontal" @select="viewJob">
+        <el-menu-item index="unviewed">Unviewed</el-menu-item>
+        <el-menu-item index="viewed">Viewed</el-menu-item>
       </el-menu>
       <div
         v-if="jobs?.length > 0"
