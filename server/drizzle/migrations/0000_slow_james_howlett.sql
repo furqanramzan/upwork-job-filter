@@ -4,6 +4,6 @@ CREATE TABLE `jobs` (
 	`title` text NOT NULL,
 	`description` text NOT NULL,
 	`posted_time` timestamp NOT NULL,
-	`is_filtered` boolean NOT NULL);
+	`filter` varchar(30) NOT NULL);
 --> statement-breakpoint
 CREATE UNIQUE INDEX `urlIdx` ON `jobs` (`url`);

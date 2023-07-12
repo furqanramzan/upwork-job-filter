@@ -4,22 +4,13 @@ import type { RouterInput } from '~/utils/types';
 const { $trpc } = useNuxtApp();
 
 const query = ref<RouterInput['job']['list']>({
-  isFiltered: false,
+  filter: 'relevant',
 });
 
 const { data: jobs, refresh } = $trpc.job.list.useQuery(query);
 
-enum JobFilter {
-  SELECTED = 'selected',
-  FILTERED = 'filtered',
-}
-const jobFilter = ref(JobFilter.SELECTED);
 function filterJob(key: string) {
-  const isFilteredValues = {
-    [JobFilter.SELECTED]: false,
-    [JobFilter.FILTERED]: true,
-  };
-  query.value.isFiltered = isFilteredValues[key as JobFilter];
+  query.value.filter = key as RouterInput['job']['list']['filter'];
   refresh();
 }
 </script>
@@ -28,12 +19,16 @@ function filterJob(key: string) {
   <div class="container mx-auto my-20">
     <div class="grid grid-cols-1 gap-y-5">
       <el-menu
-        :default-active="jobFilter"
+        :default-active="query.filter"
         mode="horizontal"
         @select="filterJob"
       >
-        <el-menu-item :index="JobFilter.SELECTED">Selected</el-menu-item>
-        <el-menu-item :index="JobFilter.FILTERED">Filtered</el-menu-item>
+        <el-menu-item index="relevant">Relevant</el-menu-item>
+        <el-menu-item index="relevant-irrelevant"
+          >Relevant-Irrelevant</el-menu-item
+        >
+        <el-menu-item index="notsure">Not Sure</el-menu-item>
+        <el-menu-item index="irrelevant">Irrelevant</el-menu-item>
       </el-menu>
       <div
         v-if="jobs?.length > 0"

@@ -1,5 +1,5 @@
+import { createSelectSchema } from 'drizzle-zod';
 import {
-  boolean,
   mysqlTable,
   serial,
   text,
@@ -7,6 +7,7 @@ import {
   uniqueIndex,
   varchar,
 } from 'drizzle-orm/mysql-core';
+import type { InferModel } from 'drizzle-orm';
 
 export const jobs = mysqlTable(
   'jobs',
@@ -16,9 +17,14 @@ export const jobs = mysqlTable(
     title: text('title').notNull(),
     description: text('description').notNull(),
     postedTime: timestamp('posted_time').notNull(),
-    isFiltered: boolean('is_filtered').notNull(),
+    filter: varchar('filter', {
+      length: 30,
+      enum: ['relevant', 'irrelevant', 'notsure', 'relevant-irrelevant'],
+    }).notNull(),
   },
   (jobs) => ({
     urlIdx: uniqueIndex('urlIdx').on(jobs.url),
   }),
 );
+export type Job = InferModel<typeof jobs, 'select'>;
+export const selectJobSchema = createSelectSchema(jobs);

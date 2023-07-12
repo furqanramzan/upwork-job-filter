@@ -17,7 +17,7 @@ function copyForProposal() {
       <div class="flex items-center justify-between">
         <span class="flex w-5/6 items-center">
           <el-icon
-            v-if="job.isFiltered"
+            v-if="job.filter === 'irrelevant'"
             class="mr-2 rounded bg-red-400 text-white"
             size="20"
             color="white"
@@ -25,12 +25,28 @@ function copyForProposal() {
             <Close />
           </el-icon>
           <el-icon
-            v-else
+            v-else-if="job.filter === 'relevant'"
             class="mr-2 rounded bg-green-400 text-white"
             size="20"
             color="white"
           >
             <Check />
+          </el-icon>
+          <el-icon
+            v-else-if="job.filter === 'relevant-irrelevant'"
+            class="mr-2 rounded bg-green-400 text-white"
+            size="20"
+            color="white"
+          >
+            <ElIconWarning />
+          </el-icon>
+          <el-icon
+            v-else-if="job.filter === 'notsure'"
+            class="mr-2 rounded bg-gray-600 text-white"
+            size="20"
+            color="white"
+          >
+            <ElIconZoomIn />
           </el-icon>
           {{ job.title }}
         </span>

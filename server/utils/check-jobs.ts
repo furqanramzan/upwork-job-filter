@@ -1,6 +1,7 @@
 import { launch } from 'puppeteer';
 import type { Page } from 'puppeteer';
 import { jobs } from '~/server/drizzle/schema';
+import type { Job } from '~/server/drizzle/schema';
 
 const headless = true;
 
@@ -59,10 +60,29 @@ async function logIn(page: Page, email: string, password: string) {
 }
 
 async function scrapeJobs(page: Page) {
-  const preventWords = [
+  const relevantWords = [
+    'nuxt',
+    'vue',
+    'nestjs',
+    'laravel',
+    'nodejs',
+    'sveltekit',
+    'svelte',
+    'astro',
+    'javascript',
+    'typescript',
+    'tailwind',
+    'bootstrap',
+    'full stack',
+  ];
+  const irrelevantWords = [
+    'webflow',
+    'ruby',
+    'magento',
+    'C#',
     'wordpress',
     'shopify',
-    'paypal',
+    'angular',
     'elementor',
     'woo commerce',
   ];
@@ -101,15 +121,26 @@ async function scrapeJobs(page: Page) {
     const url = job.url;
     const title = job.title.toLowerCase();
     const description = job.description.toLowerCase();
+    let filter: Job['filter'] = 'notsure';
 
-    const isFiltered = preventWords.some(
+    const isRelevant = relevantWords.some(
       (word) => title.includes(word) || description.includes(word),
     );
+    const isIrrelevant = irrelevantWords.some(
+      (word) => title.includes(word) || description.includes(word),
+    );
+    if (isRelevant && isIrrelevant) {
+      filter = 'relevant-irrelevant';
+    } else if (isRelevant) {
+      filter = 'relevant';
+    } else if (isIrrelevant) {
+      filter = 'irrelevant';
+    }
 
     const visisted = visitedJobs.includes(url);
     if (!visisted) {
       const { data, error } = await promise(() =>
-        drizzle.insert(jobs).values({ ...job, isFiltered }),
+        drizzle.insert(jobs).values({ ...job, filter }),
       );
 
       if (data) {
