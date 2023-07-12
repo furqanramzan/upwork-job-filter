@@ -15,6 +15,7 @@ function filterJob(key: string) {
   refresh();
 }
 
+const isViewed = ref<'unviewed' | 'viewed'>('unviewed');
 function viewJob(key: string) {
   if (key === 'viewed') {
     query.value.isViewed = true;
@@ -23,6 +24,26 @@ function viewJob(key: string) {
   }
   refresh();
 }
+
+const { show, onClick } = useWebNotification({
+  title: 'New relevant job',
+});
+onClick(() => {
+  isViewed.value = 'unviewed';
+  query.value.filter = 'relevant';
+  query.value.isViewed = false;
+  refresh();
+  window.parent.parent.focus();
+});
+async function checkUnviewed() {
+  const isUnviewed = await $trpc.job.unviewed.query();
+  if (isUnviewed) {
+    show();
+  }
+  setTimeout(checkUnviewed, 2 * 60000);
+}
+
+onMounted(() => checkUnviewed());
 </script>
 
 <template>
@@ -40,13 +61,14 @@ function viewJob(key: string) {
         <el-menu-item index="notsure">Not Sure</el-menu-item>
         <el-menu-item index="irrelevant">Irrelevant</el-menu-item>
       </el-menu>
-      <el-menu default-active="unviewed" mode="horizontal" @select="viewJob">
+      <el-menu :default-active="isViewed" mode="horizontal" @select="viewJob">
         <el-menu-item index="unviewed">Unviewed</el-menu-item>
         <el-menu-item index="viewed">Viewed</el-menu-item>
       </el-menu>
       <div
         v-if="jobs?.length > 0"
         class="grid grid-cols-1 gap-4 lg:grid-cols-2"
+        @click="checkUnviewed"
       >
         <JobItem v-for="job of jobs" :key="job.id" :job="job" />
       </div>
