@@ -1,4 +1,4 @@
-import { createSelectSchema } from 'drizzle-zod';
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import {
   boolean,
   mysqlTable,
@@ -31,3 +31,11 @@ export const jobs = mysqlTable(
 export type Job = InferModel<typeof jobs, 'select'>;
 export type InsertJob = InferModel<typeof jobs, 'insert'>;
 export const selectJobSchema = createSelectSchema(jobs);
+
+export const tokens = mysqlTable('tokens', {
+  id: serial('id').primaryKey(),
+  endpoint: varchar('endpoint', { length: 256 }).notNull(),
+  key: varchar('key', { length: 256 }).notNull(),
+  auth: varchar('auth', { length: 256 }).notNull(),
+});
+export const tokenSchema = createInsertSchema(tokens);

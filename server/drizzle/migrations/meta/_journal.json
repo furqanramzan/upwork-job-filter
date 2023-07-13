@@ -8,6 +8,13 @@
       "when": 1689181833978,
       "tag": "0000_long_eternals",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1689247765201,
+      "tag": "0001_natural_lockjaw",
+      "breakpoints": true
     }
   ]
 }

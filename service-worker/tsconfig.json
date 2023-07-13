@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {
+    "lib": ["ESNext", "WebWorker", "DOM.Iterable"]
+  },
+  "include": ["./**/*.ts"]
+}

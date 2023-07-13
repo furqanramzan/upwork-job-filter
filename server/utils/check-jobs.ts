@@ -1,7 +1,8 @@
+import { eq, sql } from 'drizzle-orm';
 import { launch } from 'puppeteer';
 import type { Page } from 'puppeteer';
 import { jobs } from '~/server/drizzle/schema';
-import type { InsertJob, Job } from '~/server/drizzle/schema';
+import type { InsertJob } from '~/server/drizzle/schema';
 
 const headless = true;
 
@@ -114,10 +115,11 @@ async function scrapeJobs(page: Page) {
     (group) => group.map((g) => g.innerText),
   );
 
-  const allJobs = jobTitles.map((job, index) => ({
+  const allJobs: InsertJob[] = jobTitles.map((job, index) => ({
     ...job,
     description: jobDescriptions[index],
     postedTime: getTimeFromString(jobPosted[index].replace('.', ' ')),
+    filter: 'notsure',
   }));
 
   const visitedJobs = await page.$$eval(
@@ -125,11 +127,18 @@ async function scrapeJobs(page: Page) {
     (group) => group.map((g) => g.href),
   );
 
-  for await (const job of allJobs) {
-    const url = job.url;
-    const title = job.title.toLowerCase();
-    const description = job.description.toLowerCase();
-    let filter: Job['filter'] = 'notsure';
+  for await (const [index, job] of allJobs.entries()) {
+    const { url, title, description } = job;
+    const count = (
+      await drizzle
+        .select({ count: sql<number>`count(${jobs.id})` })
+        .from(jobs)
+        .where(eq(jobs.url, url))
+    )[0].count;
+    if (count > 0) {
+      allJobs.splice(index, 1);
+      continue;
+    }
 
     const text = `${title} ${description}`;
     const isRelevant = relevantWords.some((word) =>
@@ -139,18 +148,17 @@ async function scrapeJobs(page: Page) {
       searchExactWord(text, word),
     );
     if (isRelevant && isIrrelevant) {
-      filter = 'relevant-irrelevant';
+      job.filter = 'relevant-irrelevant';
     } else if (isRelevant) {
-      filter = 'relevant';
+      job.filter = 'relevant';
     } else if (isIrrelevant) {
-      filter = 'irrelevant';
+      job.filter = 'irrelevant';
     }
 
     const visisted = visitedJobs.includes(url);
     if (!visisted) {
-      const values: InsertJob = { ...job, filter };
       const { data, error } = await promise(() =>
-        drizzle.insert(jobs).values(values),
+        drizzle.insert(jobs).values(job),
       );
 
       if (data) {
@@ -161,9 +169,14 @@ async function scrapeJobs(page: Page) {
         await page.goBack();
         await sleep(500);
       } else {
-        console.error({ error, values });
+        console.error({ error, job });
       }
     }
+  }
+
+  const hasRelevantJob = allJobs.some((job) => job.filter === 'relevant');
+  if (hasRelevantJob) {
+    await pushNotification('New relevant job');
   }
 }
 
