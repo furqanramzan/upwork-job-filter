@@ -1,4 +1,4 @@
-import { and, desc, eq, sql } from 'drizzle-orm';
+import { and, desc, eq } from 'drizzle-orm';
 import { jobs, selectJobSchema } from '~/server/drizzle/schema';
 
 export const job = trpcRouter({
@@ -19,11 +19,4 @@ export const job = trpcRouter({
       }
       return data;
     }),
-  unviewed: trpcProcedure.query(async () => {
-    const data = await drizzle
-      .select({ count: sql<number>`count(${jobs.id})` })
-      .from(jobs)
-      .where(and(eq(jobs.filter, 'relevant'), eq(jobs.isViewed, false)));
-    return data[0].count > 0;
-  }),
 });
