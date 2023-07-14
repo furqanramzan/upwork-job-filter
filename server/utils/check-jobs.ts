@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
+import { eq, inArray, sql } from 'drizzle-orm';
 import { launch } from 'puppeteer';
 import type { Page } from 'puppeteer';
 import { jobs } from '~/server/drizzle/schema';
@@ -28,13 +28,15 @@ export async function checkJobs() {
       await logIn(page, configs.UPWORK_USERNAME, configs.UPWORK_PASSWORD);
     }
 
-    await scrapeJobs(page);
+    let allJobs = await scrapeJobs(page);
     await page.click('[data-test="tab-best-matches"]');
     sleep(5000);
-    await scrapeJobs(page);
+    allJobs = [...allJobs, ...(await scrapeJobs(page))];
     await page.click('[data-test="tab-most-recent"]');
     sleep(5000);
-    await scrapeJobs(page);
+    allJobs = [...allJobs, ...(await scrapeJobs(page))];
+
+    await notify(allJobs);
   } catch (error) {
     success = false;
     console.error(error);
@@ -94,6 +96,8 @@ async function scrapeJobs(page: Page) {
     'android',
     'ios',
     'mobile app',
+    'java',
+    'react native',
   ];
 
   await page.evaluate(() => {
@@ -174,9 +178,30 @@ async function scrapeJobs(page: Page) {
     }
   }
 
-  const hasRelevantJob = allJobs.some((job) => job.filter === 'relevant');
-  if (hasRelevantJob) {
-    await pushNotification('New relevant job');
+  return allJobs;
+}
+
+async function notify(allJobs: InsertJob[]) {
+  const notifiableFilter: InsertJob['filter'][] = [
+    'relevant-irrelevant',
+    'relevant',
+  ];
+  const hasNotifiableJob = allJobs.some((job) =>
+    notifiableFilter.includes(job.filter),
+  );
+  if (!hasNotifiableJob) {
+    return;
+  }
+
+  const unviewNotifiableJob = (
+    await drizzle
+      .select({ count: sql<number>`count(${jobs.id})` })
+      .from(jobs)
+      .where(inArray(jobs.filter, notifiableFilter))
+  )[0].count;
+
+  if (unviewNotifiableJob > 0) {
+    await pushNotification('New job');
   }
 }
 
