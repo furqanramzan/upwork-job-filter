@@ -1,14 +1,8 @@
-# Nuxt 3 Minimal Starter
+# Upwork Job Filter
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+The Upwork Job Filter is a tool designed to filter out the jobs and keep you updated on the latest jobs on Upwork.
 
 ## Setup
-
-Make a copy of the environment variables file.
-
-```bash
-cp .env.example .env
-```
 
 Install the dependencies:
 
@@ -16,10 +10,16 @@ Install the dependencies:
 pnpm install
 ```
 
-Create SQLite database.
+Generate the vapid keys:
 
 ```bash
-pnpm run push
+pnpm web-push generate-vapid-keys
+```
+
+Make a copy of the environment variables file.
+
+```bash
+cp .env.example .env
 ```
 
 Prepare Nuxt.
@@ -56,4 +56,14 @@ Locally preview production build:
 npm run preview
 ```
 
+Start the pm2 for the background process:
+
+```bash
+npm run prod
+```
+
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+## Resources
+
+Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
