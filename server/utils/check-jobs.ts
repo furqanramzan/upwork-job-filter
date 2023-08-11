@@ -1,10 +1,12 @@
-import { and, eq, inArray, sql } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { launch } from 'puppeteer';
 import type { Page } from 'puppeteer';
 import { jobs } from '~/server/drizzle/schema';
 import type { InsertJob } from '~/server/drizzle/schema';
 
 const headless = true;
+
+const notifiableFilter: InsertJob['filter'][] = ['relevant'];
 
 export async function checkJobs() {
   const configs = useRuntimeConfig();
@@ -28,15 +30,13 @@ export async function checkJobs() {
       await logIn(page, configs.UPWORK_USERNAME, configs.UPWORK_PASSWORD);
     }
 
-    let allJobs = await scrapeJobs(page);
+    await scrapeJobs(page);
     await page.click('[data-test="tab-best-matches"]');
-    sleep(5000);
-    allJobs = [...allJobs, ...(await scrapeJobs(page))];
+    await sleep(4000);
+    await scrapeJobs(page);
     await page.click('[data-test="tab-most-recent"]');
-    sleep(5000);
-    allJobs = [...allJobs, ...(await scrapeJobs(page))];
-
-    await notify(allJobs);
+    sleep(4000);
+    await scrapeJobs(page);
   } catch (error) {
     success = false;
     console.error(error);
@@ -175,6 +175,13 @@ async function scrapeJobs(page: Page) {
         drizzle.insert(jobs).values(job),
       );
 
+      const hasNotifiableJob = allJobs.some((job) =>
+        notifiableFilter.includes(job.filter),
+      );
+      if (hasNotifiableJob) {
+        await pushNotification(job.title);
+      }
+
       if (data) {
         const clickEvent = await promise(() =>
           page.click(`[href="${url.replace('https://www.upwork.com', '')}"]`),
@@ -191,29 +198,6 @@ async function scrapeJobs(page: Page) {
   }
 
   return allJobs;
-}
-
-async function notify(allJobs: InsertJob[]) {
-  const notifiableFilter: InsertJob['filter'][] = ['relevant'];
-  const hasNotifiableJob = allJobs.some((job) =>
-    notifiableFilter.includes(job.filter),
-  );
-  if (!hasNotifiableJob) {
-    return;
-  }
-
-  const unviewNotifiableJob = (
-    await drizzle
-      .select({ count: sql<number>`count(${jobs.id})` })
-      .from(jobs)
-      .where(
-        and(inArray(jobs.filter, notifiableFilter), eq(jobs.isViewed, false)),
-      )
-  )[0].count;
-
-  if (unviewNotifiableJob > 0) {
-    await pushNotification('New job');
-  }
 }
 
 function searchExactWord(text: string, word: string): boolean {
