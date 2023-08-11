@@ -1,4 +1,4 @@
-import { eq, inArray, sql } from 'drizzle-orm';
+import { and, eq, inArray, sql } from 'drizzle-orm';
 import { launch } from 'puppeteer';
 import type { Page } from 'puppeteer';
 import { jobs } from '~/server/drizzle/schema';
@@ -166,12 +166,14 @@ async function scrapeJobs(page: Page) {
       );
 
       if (data) {
-        await page.click(
-          `[href="${url.replace('https://www.upwork.com', '')}"]`,
+        const clickEvent = await promise(() =>
+          page.click(`[href="${url.replace('https://www.upwork.com', '')}"]`),
         );
-        await sleep(1000);
-        await page.goBack();
-        await sleep(500);
+        if (!clickEvent.error) {
+          await sleep(1000);
+          await page.goBack();
+          await sleep(500);
+        }
       } else {
         console.error({ error, job });
       }
@@ -182,10 +184,7 @@ async function scrapeJobs(page: Page) {
 }
 
 async function notify(allJobs: InsertJob[]) {
-  const notifiableFilter: InsertJob['filter'][] = [
-    'relevant-irrelevant',
-    'relevant',
-  ];
+  const notifiableFilter: InsertJob['filter'][] = ['relevant'];
   const hasNotifiableJob = allJobs.some((job) =>
     notifiableFilter.includes(job.filter),
   );
@@ -197,7 +196,9 @@ async function notify(allJobs: InsertJob[]) {
     await drizzle
       .select({ count: sql<number>`count(${jobs.id})` })
       .from(jobs)
-      .where(inArray(jobs.filter, notifiableFilter))
+      .where(
+        and(inArray(jobs.filter, notifiableFilter), eq(jobs.isViewed, false)),
+      )
   )[0].count;
 
   if (unviewNotifiableJob > 0) {
