@@ -119,12 +119,22 @@ async function scrapeJobs(page: Page) {
     (group) => group.map((g) => g.innerText),
   );
 
-  const allJobs: InsertJob[] = jobTitles.map((job, index) => ({
-    ...job,
-    description: jobDescriptions[index],
-    postedTime: getTimeFromString(jobPosted[index].replace('.', ' ')),
-    filter: 'notsure',
-  }));
+  const jobPayment = await page.$$eval(
+    '[data-test="payment-verification-status"] > strong',
+    (group) => group.map((g) => g.innerText),
+  );
+
+  const allJobs: InsertJob[] = [];
+  jobTitles.forEach((job, index) => {
+    if (jobPayment[index] === 'Payment verified') {
+      allJobs.push({
+        ...job,
+        description: jobDescriptions[index],
+        postedTime: getTimeFromString(jobPosted[index].replace('.', ' ')),
+        filter: 'notsure',
+      });
+    }
+  });
 
   const visitedJobs = await page.$$eval(
     'section.up-card-visited > div > div > h3 > a',
