@@ -24,6 +24,12 @@ function viewJob(key: string) {
   }
   refresh();
 }
+
+onMounted(() => {
+  navigator.serviceWorker.addEventListener('message', ({ data }) => {
+    ElNotification.success(data);
+  });
+});
 </script>
 
 <template>
