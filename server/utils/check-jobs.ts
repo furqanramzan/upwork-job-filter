@@ -175,9 +175,7 @@ async function scrapeJobs(page: Page) {
         drizzle.insert(jobs).values(job),
       );
 
-      const hasNotifiableJob = allJobs.some((job) =>
-        notifiableFilter.includes(job.filter),
-      );
+      const hasNotifiableJob = notifiableFilter.includes(job.filter);
       if (hasNotifiableJob) {
         await pushNotification(job.title);
       }
