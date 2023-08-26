@@ -65,10 +65,14 @@ async function logIn(page: Page, email: string, password: string) {
 async function scrapeJobs(page: Page) {
   const relevantWords = [
     'nuxt',
+    'nuxt.js',
     'vue',
+    'vue.js',
     'nestjs',
+    'nest.js',
     'laravel',
     'nodejs',
+    'node.js',
     'sveltekit',
     'svelte',
     'astro',
@@ -80,6 +84,11 @@ async function scrapeJobs(page: Page) {
     'flowbite',
     'web developer',
     'landing page',
+    'nextjs',
+    'next.js',
+    'reactjs',
+    'react.js',
+    'react',
   ];
   const irrelevantWords = [
     'webflow',
