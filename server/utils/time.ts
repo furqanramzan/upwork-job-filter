@@ -6,6 +6,7 @@ export function getTimeFromString(timeString: string): Date {
 
   // Map the time units to milliseconds
   const unitMapping: { [key: string]: number } = {
+    sec: 1000,
     second: 1000,
     min: 60000,
     minute: 60000,
