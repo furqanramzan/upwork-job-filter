@@ -114,8 +114,8 @@ async function scrapeJobs(page: Page) {
   });
   await sleep(4000);
 
-  const jobTitles = await page.$$eval('h3.job-tile-title > a', (group) =>
-    group.map((g) => ({ title: g.innerText, url: g.href, description: '' })),
+  const jobTitles = await page.$$eval('h2.job-tile-title > a', (group) =>
+    group.map((g) => ({ title: g.innerText, url: g.href })),
   );
 
   const jobDescriptions = await page.$$eval(
