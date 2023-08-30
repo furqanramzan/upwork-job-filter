@@ -10,7 +10,8 @@
     "lint": "eslint --fix --max-warnings 0 .",
     "prepare": "nuxt prepare",
     "migration": "drizzle-kit generate:mysql --schema=./server/drizzle/schema.ts --out=./server/drizzle/migrations",
-    "prod": "pm2 start"
+    "prod": "pm2 stop upworkjobfilter && rm -rf .output/tmp && pm2 start",
+    "buildprod": "pm2 stop upworkjobfilter && npm run build && npm run prod"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.39.5",
