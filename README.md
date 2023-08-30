@@ -67,3 +67,7 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 ## Resources
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+
+## License
+
+Upwork Job Filter is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
