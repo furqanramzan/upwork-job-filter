@@ -5,33 +5,28 @@ declare const self: ServiceWorkerGlobalScope;
 self.skipWaiting();
 clientsClaim();
 
-async function checkClientIsVisible() {
+async function pushNotification(title: string, body: string) {
   const windowClients = await self.clients.matchAll({
     type: 'window',
     includeUncontrolled: true,
   });
+  const activeClients = windowClients.filter(
+    (x) => x.visibilityState === 'visible',
+  );
 
-  return windowClients.some((x) => x.visibilityState === 'visible');
+  if (activeClients.length > 0) {
+    activeClients.forEach((client) => client.postMessage(body));
+  } else {
+    await self.registration.showNotification(title, { body });
+  }
 }
 
-self.addEventListener('push', async (event: PushEvent) => {
+self.addEventListener('push', (event: PushEvent) => {
   const payload = event.data?.json();
-  const title = payload.title;
-  const options: NotificationOptions = {
-    body: payload.body,
-  };
+  const title: string = payload.title;
+  const body: string = payload.body;
 
-  if (await checkClientIsVisible()) {
-    event.waitUntil(
-      self.clients
-        .matchAll()
-        .then((clients) =>
-          clients.forEach((client) => client.postMessage(options.body)),
-        ),
-    );
-  } else {
-    event.waitUntil(self.registration.showNotification(title, options));
-  }
+  event.waitUntil(pushNotification(title, body));
 });
 
 self.addEventListener('notificationclick', (event) => {
