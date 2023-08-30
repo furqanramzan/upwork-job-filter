@@ -4,11 +4,8 @@ import { desc } from 'drizzle-orm';
 import { tokens } from '../drizzle/schema';
 
 export async function pushNotification(text: string) {
-  const config = useRuntimeConfig();
-  const APP_NAME = config.APP_NAME;
-  const VAPID_EMAIL_ADDRESS = config.VAPID_EMAIL_ADDRESS;
-  const VAPID_PRIVATE_KEY = config.VAPID_PRIVATE_KEY;
-  const VAPID_PUBLIC_KEY = config.VAPID_PUBLIC_KEY;
+  const { APP_NAME, VAPID_EMAIL_ADDRESS, VAPID_PRIVATE_KEY, VAPID_PUBLIC_KEY } =
+    useRuntimeConfig();
   if (!VAPID_EMAIL_ADDRESS || !VAPID_PRIVATE_KEY || !VAPID_PUBLIC_KEY) {
     return;
   }

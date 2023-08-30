@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     UPWORK_PASSWORD: process.env.UPWORK_PASSWORD,
     VAPID_PRIVATE_KEY: process.env.VAPID_PRIVATE_KEY,
     VAPID_PUBLIC_KEY: process.env.VAPID_PUBLIC_KEY,
+    VAPID_EMAIL_ADDRESS: process.env.VAPID_EMAIL_ADDRESS,
     CHROME_EXECUTABLE_PATH: process.env.CHROME_EXECUTABLE_PATH,
   },
   experimental: {
