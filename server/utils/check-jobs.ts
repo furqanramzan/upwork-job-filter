@@ -187,7 +187,9 @@ async function scrapeJobs(page: Page) {
 
       const hasNotifiableJob = notifiableFilter.includes(job.filter);
       if (hasNotifiableJob) {
-        await pushNotification(job.title);
+        if (isDateNotOlderThanMinutes(job.postedTime, 15)) {
+          await pushNotification(job.title);
+        }
       }
 
       if (data) {

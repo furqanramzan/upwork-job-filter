@@ -27,3 +27,13 @@ export function getTimeFromString(timeString: string): Date {
 
   return time;
 }
+
+export function isDateNotOlderThanMinutes(
+  date: Date,
+  minutes: number,
+): boolean {
+  const minutesAgo = new Date();
+  minutesAgo.setMinutes(minutesAgo.getMinutes() - minutes);
+
+  return date > minutesAgo;
+}
