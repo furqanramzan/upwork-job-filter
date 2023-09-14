@@ -26,3 +26,21 @@ export async function promise<T>(
     return { data: null, error };
   }
 }
+
+class PuppeteerError extends Error {
+  constructor(name: string, error: Error) {
+    super(error.message);
+    this.name = name;
+  }
+}
+export async function executePuppeteerCommand<T>(
+  command: () => Promise<T>,
+  commandName: string,
+) {
+  try {
+    const data = await command();
+    return data;
+  } catch (error) {
+    throw new PuppeteerError(commandName, error as Error);
+  }
+}

@@ -1,6 +1,7 @@
 import { eq, sql } from 'drizzle-orm';
 import { launch } from 'puppeteer';
 import type { Page } from 'puppeteer';
+import { executePuppeteerCommand } from './utils';
 import { jobs } from '~/server/drizzle/schema';
 import type { InsertJob } from '~/server/drizzle/schema';
 
@@ -31,10 +32,16 @@ export async function checkJobs() {
     }
 
     await scrapeJobs(page);
-    await page.click('[data-test="tab-best-matches"]');
+    await executePuppeteerCommand(
+      () => page.click('[data-test="tab-best-matches"]'),
+      'best matches',
+    );
     await sleep(4000);
     await scrapeJobs(page);
-    await page.click('[data-test="tab-most-recent"]');
+    await executePuppeteerCommand(
+      () => page.click('[data-test="tab-most-recent"]'),
+      'most recent',
+    );
     sleep(4000);
     await scrapeJobs(page);
   } catch (error) {
@@ -50,16 +57,42 @@ export async function checkJobs() {
 }
 
 async function logIn(page: Page, email: string, password: string) {
-  await page.focus('input[name="login[username]"]');
-  await page.keyboard.type(email);
-  await page.keyboard.press('Enter');
-  await page.waitForSelector('input[name="login[password]"]');
-  await page.click('#login_rememberme');
-  await page.focus('input[name="login[password]"]');
-  await page.keyboard.type(password);
-  await page.keyboard.press('Enter');
-  // TODO: Add wait for selector.
-  await sleep(9000);
+  await executePuppeteerCommand(
+    () => page.focus('input[name="login[username]"]'),
+    'username focus',
+  );
+  await executePuppeteerCommand(
+    () => page.keyboard.type(email),
+    'username typing',
+  );
+  await executePuppeteerCommand(
+    () => page.keyboard.press('Enter'),
+    'username enter',
+  );
+  await executePuppeteerCommand(
+    () => page.waitForSelector('input[name="login[password]"]'),
+    'password wait',
+  );
+  await executePuppeteerCommand(
+    () => page.click('#login_rememberme'),
+    'remember me click',
+  );
+  await executePuppeteerCommand(
+    () => page.focus('input[name="login[password]"]'),
+    'password focus',
+  );
+  await executePuppeteerCommand(
+    () => page.keyboard.type(password),
+    'password typing',
+  );
+  await executePuppeteerCommand(
+    () => page.keyboard.press('Enter'),
+    'password enter',
+  );
+  await executePuppeteerCommand(
+    () => page.waitForSelector('[data-test="tab-best-matches"]'),
+    'wait after login',
+  );
 }
 
 async function scrapeJobs(page: Page) {
@@ -114,23 +147,38 @@ async function scrapeJobs(page: Page) {
   });
   await sleep(4000);
 
-  const jobTitles = await page.$$eval('h2.job-tile-title > a', (group) =>
-    group.map((g) => ({ title: g.innerText, url: g.href })),
+  const jobTitles = await executePuppeteerCommand(
+    () =>
+      page.$$eval('h2.job-tile-title > a', (group) =>
+        group.map((g) => ({ title: g.innerText, url: g.href })),
+      ),
+    'job titles',
   );
 
-  const jobDescriptions = await page.$$eval(
-    'div.up-line-clamp-v2-wrapper > div.up-line-clamp-v2 > span',
-    (group) => group.map((g) => g.innerText),
+  const jobDescriptions = await executePuppeteerCommand(
+    () =>
+      page.$$eval(
+        'div.up-line-clamp-v2-wrapper > div.up-line-clamp-v2 > span',
+        (group) => group.map((g) => g.innerText),
+      ),
+    'job descriptions',
   );
 
-  const jobPosted = await page.$$eval(
-    '[data-test="posted-on"] > span',
-    (group) => group.map((g) => g.innerText),
+  const jobPosted = await executePuppeteerCommand(
+    () =>
+      page.$$eval('[data-test="posted-on"] > span', (group) =>
+        group.map((g) => g.innerText),
+      ),
+    'job posted',
   );
 
-  const jobPayment = await page.$$eval(
-    '[data-test="payment-verification-status"] > strong',
-    (group) => group.map((g) => g.innerText),
+  const jobPayment = await executePuppeteerCommand(
+    () =>
+      page.$$eval(
+        '[data-test="payment-verification-status"] > strong',
+        (group) => group.map((g) => g.innerText),
+      ),
+    'job payment',
   );
 
   const allJobs: InsertJob[] = [];
