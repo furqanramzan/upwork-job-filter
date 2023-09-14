@@ -74,7 +74,7 @@ async function logIn(page: Page, email: string, password: string) {
     'password wait',
   );
   await executePuppeteerCommand(
-    () => page.click('#login_rememberme'),
+    () => page.click('[data-test="checkbox-label"]'),
     'remember me click',
   );
   await executePuppeteerCommand(
