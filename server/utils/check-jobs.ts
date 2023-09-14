@@ -36,13 +36,11 @@ export async function checkJobs() {
       () => page.click('[data-test="tab-best-matches"]'),
       'best matches',
     );
-    await sleep(4000);
     await scrapeJobs(page);
     await executePuppeteerCommand(
       () => page.click('[data-test="tab-most-recent"]'),
       'most recent',
     );
-    sleep(4000);
     await scrapeJobs(page);
   } catch (error) {
     success = false;
@@ -142,10 +140,15 @@ async function scrapeJobs(page: Page) {
     'react native',
   ];
 
+  await executePuppeteerCommand(
+    () => page.waitForSelector('h2.job-tile-title > a'),
+    'wait for jobs',
+  );
+
   await page.evaluate(() => {
     window.scrollBy(0, window.innerHeight);
   });
-  await sleep(4000);
+  await sleep(3000);
 
   const jobTitles = await executePuppeteerCommand(
     () =>
