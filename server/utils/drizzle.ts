@@ -2,6 +2,7 @@ import { join } from 'node:path';
 import { createConnection } from 'mysql2';
 import { drizzle as drizzleOrm } from 'drizzle-orm/mysql2';
 import { migrate } from 'drizzle-orm/mysql2/migrator';
+import * as schema from '~/server/drizzle/schema';
 
 const connection = createConnection({
   host: process.env.DATABASE_HOST,
@@ -11,7 +12,7 @@ const connection = createConnection({
   database: process.env.DATABASE_NAME,
 });
 
-export const drizzle = drizzleOrm(connection);
+export const drizzle = drizzleOrm(connection, { schema });
 
 // this will automatically run needed migrations on the database
 const { DRIZZLE_DIRECTORY } = useRuntimeConfig();

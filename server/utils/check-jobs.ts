@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
+import { eq, inArray, sql } from 'drizzle-orm';
 import { launch } from 'puppeteer';
 import type { Page } from 'puppeteer';
 import { executePuppeteerCommand } from './utils';
@@ -185,8 +185,17 @@ async function scrapeJobs(page: Page) {
   );
 
   const allJobs: InsertJob[] = [];
+  const urls = jobTitles.map((x) => x.url);
+  const savedJobs = new Set<string>();
+  (
+    await drizzle.query.jobs.findMany({
+      columns: { url: true },
+      where: ({ url }) => inArray(url, urls),
+    })
+  ).forEach(({ url }) => savedJobs.add(url));
+
   jobTitles.forEach((job, index) => {
-    if (jobPayment[index] === 'Payment verified') {
+    if (jobPayment[index] === 'Payment verified' && !savedJobs.has(job.url)) {
       allJobs.push({
         ...job,
         description: jobDescriptions[index],
@@ -195,11 +204,6 @@ async function scrapeJobs(page: Page) {
       });
     }
   });
-
-  const visitedJobs = await page.$$eval(
-    'section.up-card-visited > div > div > h3 > a',
-    (group) => group.map((g) => g.href),
-  );
 
   for await (const [index, job] of allJobs.entries()) {
     const { url, title, description } = job;
@@ -229,32 +233,20 @@ async function scrapeJobs(page: Page) {
       job.filter = 'irrelevant';
     }
 
-    const visisted = visitedJobs.includes(url);
-    if (!visisted) {
-      const { data, error } = await promise(
-        () => drizzle.insert(jobs).values(job),
-        true,
-      );
+    const { error } = await promise(
+      () => drizzle.insert(jobs).values(job),
+      true,
+    );
 
-      const hasNotifiableJob = notifiableFilter.includes(job.filter);
-      if (hasNotifiableJob) {
-        if (isDateNotOlderThanMinutes(job.postedTime, 15)) {
-          await pushNotification(job.title);
-        }
+    const hasNotifiableJob = notifiableFilter.includes(job.filter);
+    if (hasNotifiableJob) {
+      if (isDateNotOlderThanMinutes(job.postedTime, 15)) {
+        await pushNotification(job.title);
       }
+    }
 
-      if (data) {
-        const clickEvent = await promise(() =>
-          page.click(`[href="${url.replace('https://www.upwork.com', '')}"]`),
-        );
-        if (!clickEvent.error) {
-          await sleep(1000);
-          await page.goBack();
-          await sleep(500);
-        }
-      } else {
-        console.error({ error, job });
-      }
+    if (error) {
+      console.error({ error, job });
     }
   }
 
