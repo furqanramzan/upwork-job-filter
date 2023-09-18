@@ -1,7 +1,6 @@
 import { eq, inArray, sql } from 'drizzle-orm';
 import { launch } from 'puppeteer';
-import type { Page } from 'puppeteer';
-import { executePuppeteerCommand } from './utils';
+import type { Browser, Page } from 'puppeteer';
 import { jobs } from '~/server/drizzle/schema';
 import type { InsertJob } from '~/server/drizzle/schema';
 
@@ -17,31 +16,40 @@ export async function checkJobs() {
     headless: headless ? 'new' : false,
     userDataDir: './tmp',
     executablePath,
+    defaultViewport: { width: 1920, height: 941 },
+    args: ['--start-maximized'],
   });
+  const page = await browser.newPage();
 
   let success = true;
   try {
-    const page = await browser.newPage();
     await page.goto('https://www.upwork.com/nx/find-work/');
 
     const loggedIn = await page
       .$eval('[name="login[username]"]', () => false)
       .catch(() => true);
     if (!loggedIn) {
-      await logIn(page, configs.UPWORK_USERNAME, configs.UPWORK_PASSWORD);
+      await logIn(
+        browser,
+        page,
+        configs.UPWORK_USERNAME,
+        configs.UPWORK_PASSWORD,
+      );
     }
 
-    await scrapeJobs(page);
+    await scrapeJobs(browser, page);
     await executePuppeteerCommand(
       () => page.click('[data-test="tab-best-matches"]'),
+      browser,
       'best matches',
     );
-    await scrapeJobs(page);
+    await scrapeJobs(browser, page);
     await executePuppeteerCommand(
       () => page.click('[data-test="tab-most-recent"]'),
+      browser,
       'most recent',
     );
-    await scrapeJobs(page);
+    await scrapeJobs(browser, page);
   } catch (error) {
     success = false;
     console.error(error);
@@ -54,46 +62,60 @@ export async function checkJobs() {
   };
 }
 
-async function logIn(page: Page, email: string, password: string) {
+async function logIn(
+  browser: Browser,
+  page: Page,
+  email: string,
+  password: string,
+) {
   await executePuppeteerCommand(
     () => page.focus('input[name="login[username]"]'),
+    browser,
     'username focus',
   );
   await executePuppeteerCommand(
     () => page.keyboard.type(email),
+    browser,
     'username typing',
   );
   await executePuppeteerCommand(
     () => page.keyboard.press('Enter'),
+    browser,
     'username enter',
   );
   await executePuppeteerCommand(
     () => page.waitForSelector('input[name="login[password]"]'),
+    browser,
     'password wait',
   );
   await executePuppeteerCommand(
     () => page.click('[data-test="checkbox-label"]'),
+    browser,
     'remember me click',
   );
   await executePuppeteerCommand(
     () => page.focus('input[name="login[password]"]'),
+    browser,
     'password focus',
   );
   await executePuppeteerCommand(
     () => page.keyboard.type(password),
+    browser,
     'password typing',
   );
   await executePuppeteerCommand(
     () => page.keyboard.press('Enter'),
+    browser,
     'password enter',
   );
   await executePuppeteerCommand(
     () => page.waitForSelector('[data-test="tab-best-matches"]'),
+    browser,
     'wait after login',
   );
 }
 
-async function scrapeJobs(page: Page) {
+async function scrapeJobs(browser: Browser, page: Page) {
   const relevantWords = [
     'nuxt',
     'nuxt.js',
@@ -115,6 +137,7 @@ async function scrapeJobs(page: Page) {
     'flowbite',
     'web developer',
     'landing page',
+    'next',
     'nextjs',
     'next.js',
     'reactjs',
@@ -142,6 +165,7 @@ async function scrapeJobs(page: Page) {
 
   await executePuppeteerCommand(
     () => page.waitForSelector('h2.job-tile-title > a'),
+    browser,
     'wait for jobs',
   );
 
@@ -155,6 +179,7 @@ async function scrapeJobs(page: Page) {
       page.$$eval('h2.job-tile-title > a', (group) =>
         group.map((g) => ({ title: g.innerText, url: g.href })),
       ),
+    browser,
     'job titles',
   );
 
@@ -164,6 +189,7 @@ async function scrapeJobs(page: Page) {
         'div.up-line-clamp-v2-wrapper > div.up-line-clamp-v2 > span',
         (group) => group.map((g) => g.innerText),
       ),
+    browser,
     'job descriptions',
   );
 
@@ -172,6 +198,7 @@ async function scrapeJobs(page: Page) {
       page.$$eval('[data-test="posted-on"] > span', (group) =>
         group.map((g) => g.innerText),
       ),
+    browser,
     'job posted',
   );
 
@@ -181,6 +208,7 @@ async function scrapeJobs(page: Page) {
         '[data-test="payment-verification-status"] > strong',
         (group) => group.map((g) => g.innerText),
       ),
+    browser,
     'job payment',
   );
 
@@ -246,7 +274,7 @@ async function scrapeJobs(page: Page) {
     }
 
     if (error) {
-      console.error({ error, job });
+      console.error({ error, job, jobPosted });
     }
   }
 

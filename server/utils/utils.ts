@@ -1,3 +1,5 @@
+import type { Browser } from 'puppeteer';
+
 export { z as zod } from 'zod';
 
 export {
@@ -35,12 +37,14 @@ class PuppeteerError extends Error {
 }
 export async function executePuppeteerCommand<T>(
   command: () => Promise<T>,
+  browser: Browser,
   commandName: string,
 ) {
   try {
     const data = await command();
     return data;
   } catch (error) {
+    await browser.close();
     throw new PuppeteerError(commandName, error as Error);
   }
 }
