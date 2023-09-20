@@ -4,9 +4,11 @@ import type { Job } from '~/server/utils/models';
 
 const { job } = defineProps<{ job: Job }>();
 
+const { COPY_FOR_PROPOSAL_TEXT } = useRuntimeConfig().public;
+
 function copyForProposal() {
   copyToClipboard(
-    `Using the information I have provided, please craft me an upwork proposal for this job:\n\nJob Title: \n${job.title}\n\nJob Description: \n${job.description}`,
+    `${COPY_FOR_PROPOSAL_TEXT}\n\nJob Title: \n${job.title}\n\nJob Description: \n${job.description}`,
   );
 }
 </script>
