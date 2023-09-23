@@ -1,6 +1,6 @@
 import { eq, inArray, sql } from 'drizzle-orm';
 import { launch } from 'puppeteer';
-import type { Browser, Page } from 'puppeteer';
+import type { Browser, Page, PuppeteerLaunchOptions } from 'puppeteer';
 import { irrelevantWords, relevantWords } from './constants';
 import { jobs } from '~/server/drizzle/schema';
 import type { InsertJob } from '~/server/drizzle/schema';
@@ -13,13 +13,16 @@ export async function checkJobs() {
   const configs = useRuntimeConfig();
 
   const executablePath = configs.CHROME_EXECUTABLE_PATH;
-  const browser = await launch({
+  const options: PuppeteerLaunchOptions = {
     headless: headless ? 'new' : false,
     userDataDir: './tmp',
-    executablePath,
     defaultViewport: { width: 1920, height: 941 },
     args: ['--start-maximized'],
-  });
+  };
+  if (executablePath) {
+    options.executablePath = executablePath;
+  }
+  const browser = await launch(options);
   const page = await browser.newPage();
 
   let success = true;
@@ -117,53 +120,6 @@ async function logIn(
 }
 
 async function scrapeJobs(browser: Browser, page: Page) {
-  const relevantWords = [
-    'nuxt',
-    'nuxt.js',
-    'vue',
-    'vue.js',
-    'nestjs',
-    'nest.js',
-    'laravel',
-    'nodejs',
-    'node.js',
-    'sveltekit',
-    'svelte',
-    'astro',
-    'javascript',
-    'typescript',
-    'tailwind',
-    'bootstrap',
-    'full stack',
-    'flowbite',
-    'web developer',
-    'landing page',
-    'next',
-    'nextjs',
-    'next.js',
-    'reactjs',
-    'react.js',
-    'react',
-  ];
-  const irrelevantWords = [
-    'webflow',
-    'ruby',
-    'magento',
-    'C#',
-    'wordpress',
-    'shopify',
-    'angular',
-    'elementor',
-    'woo commerce',
-    '.net',
-    'python',
-    'android',
-    'ios',
-    'mobile app',
-    'java',
-    'react native',
-  ];
-
   await executePuppeteerCommand(
     () => page.waitForSelector('h2.job-tile-title > a'),
     browser,
