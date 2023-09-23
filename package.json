@@ -2,17 +2,20 @@
   "name": "upwork-job-filter",
   "private": true,
   "scripts": {
-    "dev": "nuxt dev",
-    "build": "nuxt build",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "fmt": "prettier --write .",
-    "lint": "eslint --fix --max-warnings 0 .",
-    "prepare": "nuxt prepare",
-    "migration": "drizzle-kit generate:mysql --schema=./server/drizzle/schema.ts --out=./server/drizzle/migrations",
-    "stop": "pm2 stop upworkjobfilter || true",
-    "prod": "npm run stop && rm -rf .output/tmp && pm2 start",
-    "buildprod": "npm run stop && npm run build && npm run prod"
+    "sync": "nx exec -- nuxt prepare",
+    "dev": "nx exec -- nuxt dev",
+    "build": "nx exec -- nuxt build",
+    "preview": "nx exec -- nuxt preview",
+    "typecheck": "nx exec -- nuxt typecheck",
+    "lint": "nx exec -- eslint --max-warnings 0 .",
+    "fmt": "nx exec -- prettier --write .",
+    "fmtcheck": "nx exec -- prettier --list-different .",
+    "precommit": "pnpm run fmt && pnpm run lint --fix",
+    "precommitcheck": "nx affected -t=fmtcheck,lint,typecheck,build --parallel=4",
+    "migration": "nx exec -- drizzle-kit generate:mysql --schema=./server/drizzle/schema.ts --out=./server/drizzle/migrations",
+    "postinstall": "pnpm run sync",
+    "stop": "pm2 stop upworkjobfilter || true && rm -rf .output/tmp",
+    "prod": "nx exec -- pm2 start"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.43.1",
@@ -34,6 +37,7 @@
     "mysql2": "^3.6.1",
     "nuxt": "^3.7.0",
     "nuxt-scheduler": "^0.1.9",
+    "nx": "^16.9.0",
     "pm2": "^5.3.0",
     "prettier": "^3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.4",
@@ -46,5 +50,14 @@
     "web-push": "^3.6.6",
     "workbox-core": "^7.0.0",
     "zod": "^3.22.2"
+  },
+  "nx": {
+    "targets": {
+      "build": {
+        "outputs": [
+          "{projectRoot}/.output"
+        ]
+      }
+    }
   }
 }

@@ -1,0 +1,57 @@
+{
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": [
+          "build",
+          "lint",
+          "typecheck",
+          "fmt",
+          "fmtcheck",
+          "sync"
+        ]
+      }
+    }
+  },
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
+    },
+    "preview": {
+      "dependsOn": ["build"]
+    },
+    "typecheck": {
+      "dependsOn": ["^typecheck"],
+      "inputs": ["code", "^production"]
+    },
+    "lint": {
+      "inputs": ["lint"]
+    },
+    "sync": {
+      "inputs": ["production", "^production"]
+    },
+    "prod": {
+      "dependsOn": ["stop", "build"]
+    }
+  },
+  "namedInputs": {
+    "sharedGlobals": [],
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "production": [
+      "default",
+      "!{projectRoot}/.eslintrc.json",
+      "!{projectRoot}/**/*.md"
+    ],
+    "code": ["default", "!{projectRoot}/**/*.md"],
+    "lint": [
+      "code",
+      "{workspaceRoot}/.eslintrc.json",
+      "{workspaceRoot}/.eslintignore"
+    ]
+  },
+  "affected": {
+    "defaultBase": "main"
+  }
+}

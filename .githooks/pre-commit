@@ -1,17 +1,6 @@
 #!/usr/bin/env bash
 
+# Abort on error
 set -e
-echo "-----------------------------"
-echo "| Running Format Checking |"
-echo "-----------------------------"
-sh -c "pnpm prettier --check ."
 
-echo "-----------------------------"
-echo "| Running Lint Checking |"
-echo "-----------------------------"
-sh -c "pnpm eslint --max-warnings 0 ."
-
-echo "-----------------------------"
-echo "| Running Type Checking |"
-echo "-----------------------------"
-sh -c "pnpm nuxt typecheck"
+sh -c "pnpm run precommitcheck" 
