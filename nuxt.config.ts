@@ -1,3 +1,4 @@
+import process from 'node:process';
 import { resolve } from 'node:path';
 
 // https://nuxt.com/docs/api/configuration/nuxt-config

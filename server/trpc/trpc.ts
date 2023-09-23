@@ -17,7 +17,7 @@ const t = initTRPC.context<Context>().create({
 
 /**
  * Unprotected procedure
- **/
+ */
 export const router = t.router;
 export const procedure = t.procedure;
 export const middleware = t.middleware;

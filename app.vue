@@ -51,10 +51,7 @@ onMounted(() => {
         <el-menu-item index="unviewed">Unviewed</el-menu-item>
         <el-menu-item index="viewed">Viewed</el-menu-item>
       </el-menu>
-      <div
-        v-if="jobs?.length > 0"
-        class="grid grid-cols-1 gap-4 lg:grid-cols-2"
-      >
+      <div v-if="jobs?.length" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <JobItem v-for="job of jobs" :key="job.id" :job="job" />
       </div>
       <p v-else class="text-center text-xl font-bold">No job found</p>
