@@ -1,6 +1,7 @@
 import { eq, inArray, sql } from 'drizzle-orm';
 import { launch } from 'puppeteer';
 import type { Browser, Page } from 'puppeteer';
+import { irrelevantWords, relevantWords } from './constants';
 import { jobs } from '~/server/drizzle/schema';
 import type { InsertJob } from '~/server/drizzle/schema';
 
