@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     VAPID_PUBLIC_KEY: process.env.VAPID_PUBLIC_KEY,
     VAPID_EMAIL_ADDRESS: process.env.VAPID_EMAIL_ADDRESS,
     CHROME_EXECUTABLE_PATH: process.env.CHROME_EXECUTABLE_PATH,
+    CHROME_HEADLESS: process.env.CHROME_HEADLESS,
     public: {
       COPY_FOR_PROPOSAL_TEXT: process.env.COPY_FOR_PROPOSAL_TEXT,
     },

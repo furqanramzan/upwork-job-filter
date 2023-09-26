@@ -5,13 +5,12 @@ import { irrelevantWords, relevantWords } from './constants';
 import { jobs } from '~/server/drizzle/schema';
 import type { InsertJob } from '~/server/drizzle/schema';
 
-const headless = true;
-
 const notifiableFilter: InsertJob['filter'][] = ['relevant'];
 
 export async function checkJobs() {
   const configs = useRuntimeConfig();
 
+  const headless = Number(configs.CHROME_HEADLESS);
   const executablePath = configs.CHROME_EXECUTABLE_PATH;
   const options: PuppeteerLaunchOptions = {
     headless: headless ? 'new' : false,
@@ -138,12 +137,6 @@ async function logIn(
       'answer enter',
     );
   }
-
-  await executePuppeteerCommand(
-    () => page.waitForNavigation(),
-    browser,
-    'wait after login',
-  );
 }
 
 async function scrapeJobs(browser: Browser, page: Page) {
