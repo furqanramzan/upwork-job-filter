@@ -38,6 +38,7 @@ export async function checkJobs() {
         page,
         configs.UPWORK_USERNAME,
         configs.UPWORK_PASSWORD,
+        configs.UPWORK_ANSWER,
       );
     }
 
@@ -71,6 +72,7 @@ async function logIn(
   page: Page,
   email: string,
   password: string,
+  answer: string,
 ) {
   await executePuppeteerCommand(
     () => page.focus('input[name="login[username]"]'),
@@ -112,8 +114,33 @@ async function logIn(
     browser,
     'password enter',
   );
+  const { error } = await promise(() =>
+    page.waitForXPath(
+      `//*[contains(text(), "Please answer your security question below.")]`,
+      { timeout: 10000 },
+    ),
+  );
+  if (!error) {
+    await sleep(4000);
+    await executePuppeteerCommand(
+      () => page.focus('input[name="login[answer]"]'),
+      browser,
+      'answer focus',
+    );
+    await executePuppeteerCommand(
+      () => page.keyboard.type(answer),
+      browser,
+      'answer typing',
+    );
+    await executePuppeteerCommand(
+      () => page.keyboard.press('Enter'),
+      browser,
+      'answer enter',
+    );
+  }
+
   await executePuppeteerCommand(
-    () => page.waitForSelector('[data-test="tab-best-matches"]'),
+    () => page.waitForNavigation(),
     browser,
     'wait after login',
   );

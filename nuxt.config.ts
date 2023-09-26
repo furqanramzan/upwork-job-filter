@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     CRON_TIMEOUT: process.env.CRON_TIMEOUT,
     UPWORK_USERNAME: process.env.UPWORK_USERNAME,
     UPWORK_PASSWORD: process.env.UPWORK_PASSWORD,
+    UPWORK_ANSWER: process.env.UPWORK_ANSWER,
     VAPID_PRIVATE_KEY: process.env.VAPID_PRIVATE_KEY,
     VAPID_PUBLIC_KEY: process.env.VAPID_PUBLIC_KEY,
     VAPID_EMAIL_ADDRESS: process.env.VAPID_EMAIL_ADDRESS,
