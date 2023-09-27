@@ -39,7 +39,7 @@ git config core.hooksPath .githooks
 Start the development server on `http://localhost:3000`
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 ## Production
@@ -47,19 +47,19 @@ npm run dev
 Build the application for production:
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 Locally preview production build:
 
 ```bash
-npm run preview
+pnpm run preview
 ```
 
 Start the pm2 for the background process:
 
 ```bash
-npm run prod
+pnpm run start
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.

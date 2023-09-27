@@ -15,7 +15,7 @@
     "migration": "nx exec -- drizzle-kit generate:mysql --schema=./server/drizzle/schema.ts --out=./server/drizzle/migrations",
     "postinstall": "pnpm run sync",
     "stop": "pm2 stop upworkjobfilter || true && rm -rf .output/tmp",
-    "prod": "nx exec -- pm2 start"
+    "start": "nx exec -- pm2 start"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.43.1",

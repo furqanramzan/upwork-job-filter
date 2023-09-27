@@ -32,7 +32,7 @@
     "sync": {
       "inputs": ["production", "^production"]
     },
-    "prod": {
+    "start": {
       "dependsOn": ["stop", "build"]
     }
   },
