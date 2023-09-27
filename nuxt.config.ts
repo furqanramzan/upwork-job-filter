@@ -51,4 +51,11 @@ export default defineNuxtConfig({
   typescript: {
     shim: false,
   },
+  nitro: {
+    esbuild: {
+      options: {
+        target: 'esnext',
+      },
+    },
+  },
 });
