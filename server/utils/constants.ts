@@ -25,6 +25,8 @@ export const relevantWords = [
   'reactjs',
   'react.js',
   'react',
+  'trpc',
+  'prisma',
 ];
 export const irrelevantWords = [
   'webflow',
