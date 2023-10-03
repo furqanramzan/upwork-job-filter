@@ -11,7 +11,7 @@
     "fmt": "nx exec -- prettier --write .",
     "fmtcheck": "nx exec -- prettier --list-different .",
     "precommit": "pnpm run fmt && pnpm run lint --fix",
-    "precommitcheck": "nx affected -t=fmtcheck,lint,typecheck,build --parallel=4",
+    "precommitcheck": "nx run-many -t=fmtcheck,lint,typecheck,build --parallel=4",
     "migration": "nx exec -- drizzle-kit generate:mysql --schema=./server/drizzle/schema.ts --out=./server/drizzle/migrations",
     "postinstall": "pnpm run sync",
     "stop": "pm2 stop upworkjobfilter || true && rm -rf .output/tmp",
