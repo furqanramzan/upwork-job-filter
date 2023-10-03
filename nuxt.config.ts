@@ -28,8 +28,13 @@ export default defineNuxtConfig({
     'nuxt-scheduler',
     '@nuxtjs/tailwindcss',
     '@vueuse/nuxt',
+    '@nuxtjs/color-mode',
     '@vite-pwa/nuxt',
   ],
+  colorMode: {
+    fallback: 'dark',
+    classSuffix: '',
+  },
   pwa: {
     scope: '/',
     srcDir: './service-worker',

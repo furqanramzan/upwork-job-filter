@@ -8,7 +8,7 @@ import {
   uniqueIndex,
   varchar,
 } from 'drizzle-orm/mysql-core';
-import type { InferModel } from 'drizzle-orm';
+import type { InferInsertModel, InferSelectModel } from 'drizzle-orm';
 
 export const jobs = mysqlTable(
   'jobs',
@@ -28,8 +28,8 @@ export const jobs = mysqlTable(
     urlIdx: uniqueIndex('urlIdx').on(jobs.url),
   }),
 );
-export type Job = InferModel<typeof jobs, 'select'>;
-export type InsertJob = InferModel<typeof jobs, 'insert'>;
+export type Job = InferSelectModel<typeof jobs>;
+export type InsertJob = InferInsertModel<typeof jobs>;
 export const selectJobSchema = createSelectSchema(jobs);
 
 export const tokens = mysqlTable('tokens', {

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import 'element-plus/theme-chalk/dark/css-vars.css';
 import type { RouterInput } from '~/utils/types';
 
 const { $trpc } = useNuxtApp();
