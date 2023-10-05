@@ -17,6 +17,6 @@ export const drizzle = drizzleOrm(connection, { schema, mode: 'planetscale' });
 
 // this will automatically run needed migrations on the database
 const { DRIZZLE_DIRECTORY } = useRuntimeConfig();
-migrate(drizzle, {
+await migrate(drizzle, {
   migrationsFolder: join(DRIZZLE_DIRECTORY, './migrations'),
 });

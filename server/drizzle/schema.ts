@@ -17,6 +17,7 @@ export const jobs = mysqlTable(
     url: varchar('url', { length: 256 }).notNull(),
     title: text('title').notNull(),
     description: text('description').notNull(),
+    budget: varchar('budget', { length: 256 }).notNull(),
     postedTime: timestamp('posted_time').notNull(),
     filter: varchar('filter', {
       length: 30,

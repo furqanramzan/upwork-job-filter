@@ -173,6 +173,33 @@ async function scrapeJobs(browser: Browser, page: Page) {
     'job descriptions',
   );
 
+  const jobTypes = await executePuppeteerCommand(
+    () =>
+      page.$$eval('strong[data-test="job-type"]', (group) =>
+        group.map((g) => g.innerText),
+      ),
+    browser,
+    'job types',
+  );
+
+  const jobFixedBudgets = await executePuppeteerCommand(
+    () =>
+      page.$$eval('span[data-test="budget"]', (group) =>
+        group.map((g) => g.innerText),
+      ),
+    browser,
+    'job fixed budget',
+  );
+
+  let index = 0;
+  const jobBudgets = jobTypes.map((x) => {
+    if (x === 'Fixed-price') {
+      x += `: ${jobFixedBudgets[index]}`;
+      index++;
+    }
+    return x;
+  });
+
   const jobPosted = await executePuppeteerCommand(
     () =>
       page.$$eval('[data-test="posted-on"] > span', (group) =>
@@ -207,6 +234,7 @@ async function scrapeJobs(browser: Browser, page: Page) {
       allJobs.push({
         ...job,
         description: jobDescriptions[index],
+        budget: jobBudgets[index],
         postedTime: getTimeFromString(jobPosted[index].replace('.', ' ')),
         filter: 'notsure',
       });
@@ -249,7 +277,7 @@ async function scrapeJobs(browser: Browser, page: Page) {
     const hasNotifiableJob = notifiableFilter.includes(job.filter);
     if (hasNotifiableJob) {
       if (isDateNotOlderThanMinutes(job.postedTime, 15)) {
-        await pushNotification(job.title);
+        await pushNotification(`${job.budget} - ${job.title}`);
       }
     }
 

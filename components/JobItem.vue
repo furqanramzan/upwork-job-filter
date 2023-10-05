@@ -58,9 +58,12 @@ function copyForProposal() {
         </div>
       </div>
     </template>
-    <p>{{ job.description }}</p>
-    <div class="flex justify-end">
-      <p>{{ getStringFromTime(job.postedTime) }}</p>
+    <div class="flex flex-col gap-5">
+      <div class="flex items-center justify-between">
+        <strong>{{ job.budget }}</strong>
+        <strong>{{ getStringFromTime(job.postedTime) }}</strong>
+      </div>
+      <p>{{ job.description }}</p>
     </div>
   </el-card>
 </template>

@@ -49,4 +49,5 @@ export const irrelevantWords = [
   'mobile app',
   'java',
   'react native',
+  'copywriter',
 ];
