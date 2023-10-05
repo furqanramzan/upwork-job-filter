@@ -41,10 +41,10 @@ export default defineNuxtConfig({
     filename: 'sw.ts',
     strategies: 'injectManifest',
     includeManifestIcons: false,
+    manifest: false,
     injectManifest: {
       injectionPoint: undefined,
     },
-    manifest: false,
     devOptions: {
       enabled: true,
       type: 'module',

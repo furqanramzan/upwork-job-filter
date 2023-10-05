@@ -1,9 +1,12 @@
 import { clientsClaim } from 'workbox-core';
+import { cleanupOutdatedCaches } from 'workbox-precaching';
 
 declare const self: ServiceWorkerGlobalScope;
 
 self.skipWaiting();
 clientsClaim();
+
+cleanupOutdatedCaches();
 
 async function pushNotification(title: string, body: string) {
   const windowClients = await self.clients.matchAll({

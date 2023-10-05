@@ -27,6 +27,10 @@ export const relevantWords = [
   'react',
   'trpc',
   'prisma',
+  'html',
+  'css',
+  'website',
+  'webapp',
 ];
 export const irrelevantWords = [
   'webflow',
