@@ -5,9 +5,9 @@ export default defineNitroPlugin(() => {
 
   useScheduler()
     .run(async () => {
-      console.info('Executing job cron: ', new Date());
+      console.info(new Date(), ': ', 'Executing job cron.');
       await checkJobs();
-      console.info('Executed job cron: ', new Date());
+      console.info(new Date(), ': ', 'Executed job cron.');
     })
     .everyMinutes(Number(timeout));
 });

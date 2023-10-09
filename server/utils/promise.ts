@@ -10,7 +10,7 @@ export async function promise<T>(
     return { data, error: null };
   } catch (error) {
     if (logError) {
-      console.error(error);
+      console.error(new Date(), ': ', error);
     }
     return { data: null, error };
   }

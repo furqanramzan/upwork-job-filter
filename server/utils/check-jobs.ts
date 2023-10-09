@@ -59,7 +59,7 @@ export async function checkJobs() {
     await scrapeJobs(browser, page);
   } catch (error) {
     success = false;
-    console.error(error);
+    console.error(new Date(), ': ', error);
   } finally {
     await browser.close();
   }
@@ -282,7 +282,7 @@ async function scrapeJobs(browser: Browser, page: Page) {
     }
 
     if (error) {
-      console.error({ error, job, jobPosted });
+      console.error(new Date(), ': ', { error, job, jobPosted });
     }
   }
 
