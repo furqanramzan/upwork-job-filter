@@ -1,4 +1,7 @@
 export function getTimeFromString(timeString: string): Date {
+  if (timeString === 'yesterday') {
+    timeString = '24 hours ago';
+  }
   const currentDateTime = new Date();
 
   // Extract the numeric value and unit from the time string
@@ -15,6 +18,7 @@ export function getTimeFromString(timeString: string): Date {
     hr: 3600000,
     hour: 3600000,
     hours: 3600000,
+    yesterday: 86400000,
     day: 86400000,
     days: 86400000,
     week: 604800000,

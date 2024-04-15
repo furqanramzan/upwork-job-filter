@@ -144,7 +144,7 @@ async function logIn(
 
 async function scrapeJobs(browser: Browser, page: Page) {
   await executePuppeteerCommand(
-    () => page.waitForSelector('h2.job-tile-title > a'),
+    () => page.waitForSelector('h3.job-tile-title > a'),
     browser,
     'wait for jobs',
   );
@@ -156,7 +156,7 @@ async function scrapeJobs(browser: Browser, page: Page) {
 
   const jobTitles = await executePuppeteerCommand(
     () =>
-      page.$$eval('h2.job-tile-title > a', (group) =>
+      page.$$eval('h3.job-tile-title > a', (group) =>
         group.map((g) => ({ title: g.innerText, url: g.href })),
       ),
     browser,
@@ -165,9 +165,8 @@ async function scrapeJobs(browser: Browser, page: Page) {
 
   const jobDescriptions = await executePuppeteerCommand(
     () =>
-      page.$$eval(
-        'div.up-line-clamp-v2-wrapper > div.up-line-clamp-v2 > span',
-        (group) => group.map((g) => g.innerText),
+      page.$$eval('span[data-test="job-description-text"]', (group) =>
+        group.map((g) => g.innerText),
       ),
     browser,
     'job descriptions',
@@ -202,7 +201,7 @@ async function scrapeJobs(browser: Browser, page: Page) {
 
   const jobPosted = await executePuppeteerCommand(
     () =>
-      page.$$eval('[data-test="posted-on"] > span', (group) =>
+      page.$$eval('span[data-test="posted-on"]', (group) =>
         group.map((g) => g.innerText),
       ),
     browser,
