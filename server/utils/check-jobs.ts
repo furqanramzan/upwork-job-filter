@@ -220,9 +220,9 @@ async function scrapeJobs(browser: Browser, page: Page) {
 
   const jobSkills = await executePuppeteerCommand(
     () =>
-      page.$$eval('.air3-token-wrap', (group) =>
+      page.$$eval('[data-ev-sublocation="job_feed_tile"]', (group) =>
         group.map((g) =>
-          Array.from(g.children).map(
+          Array.from(g.querySelector('.air3-token-wrap')?.children || []).map(
             (c) => c.textContent?.trim().replace(/\n/g, ''),
           ),
         ),
@@ -230,7 +230,6 @@ async function scrapeJobs(browser: Browser, page: Page) {
     browser,
     'job skills',
   );
-  jobSkills.shift();
 
   const allJobs: InsertJob[] = [];
   const urls = jobTitles.map((x) => x.url);
