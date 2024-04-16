@@ -64,13 +64,14 @@ function copyForProposal() {
         <strong>{{ getStringFromTime(job.postedTime) }}</strong>
       </div>
       <p>{{ job.description }}</p>
-      <div class="flex gap-2 flex-wrap">
+      <div class="flex flex-wrap gap-2">
         <el-tag
           v-for="(skill, index) in job.skills"
           :key="index"
           type="success"
-          >{{ skill }}</el-tag
         >
+          {{ skill }}
+        </el-tag>
       </div>
     </div>
   </el-card>

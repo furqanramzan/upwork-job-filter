@@ -221,7 +221,11 @@ async function scrapeJobs(browser: Browser, page: Page) {
   const jobSkills = await executePuppeteerCommand(
     () =>
       page.$$eval('.air3-token-wrap', (group) =>
-        group.map((g) => Array.from(g.children).map((c) => c.textContent)),
+        group.map((g) =>
+          Array.from(g.children).map(
+            (c) => c.textContent?.trim().replace(/\n/g, ''),
+          ),
+        ),
       ),
     browser,
     'job skills',
