@@ -230,6 +230,7 @@ async function scrapeJobs(browser: Browser, page: Page) {
     browser,
     'job skills',
   );
+  jobSkills.shift();
 
   const allJobs: InsertJob[] = [];
   const urls = jobTitles.map((x) => x.url);

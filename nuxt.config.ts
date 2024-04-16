@@ -1,5 +1,6 @@
 import process from 'node:process';
 import { resolve } from 'node:path';
+import { isDevelopment } from 'std-env';
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -36,6 +37,7 @@ export default defineNuxtConfig({
     classSuffix: '',
   },
   pwa: {
+    disable: isDevelopment,
     scope: '/',
     srcDir: './service-worker',
     filename: 'sw.ts',
