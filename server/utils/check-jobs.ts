@@ -218,6 +218,15 @@ async function scrapeJobs(browser: Browser, page: Page) {
     'job payment',
   );
 
+  const jobSkills = await executePuppeteerCommand(
+    () =>
+      page.$$eval('.air3-token-wrap', (group) =>
+        group.map((g) => Array.from(g.children).map((c) => c.textContent)),
+      ),
+    browser,
+    'job skills',
+  );
+
   const allJobs: InsertJob[] = [];
   const urls = jobTitles.map((x) => x.url);
   const savedJobs = new Set<string>();
@@ -235,6 +244,7 @@ async function scrapeJobs(browser: Browser, page: Page) {
         description: jobDescriptions[index],
         budget: jobBudgets[index],
         postedTime: getTimeFromString(jobPosted[index].replace('.', ' ')),
+        skills: jobSkills[index],
         filter: 'notsure',
       });
     }

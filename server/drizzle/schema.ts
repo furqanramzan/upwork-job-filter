@@ -1,6 +1,7 @@
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import {
   boolean,
+  json,
   mysqlTable,
   serial,
   text,
@@ -19,6 +20,7 @@ export const jobs = mysqlTable(
     description: text('description').notNull(),
     budget: varchar('budget', { length: 256 }).notNull(),
     postedTime: timestamp('posted_time').notNull(),
+    skills: json('skills'),
     filter: varchar('filter', {
       length: 30,
       enum: ['relevant', 'irrelevant', 'notsure', 'relevant-irrelevant'],
